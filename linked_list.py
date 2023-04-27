@@ -40,12 +40,12 @@ class LinkedList(object):
 
     privious_node = None
     while current_node and current_node.data != data:
-      previous_node = current_node
+      privious_node = current_node
       current_node = current_node.next
 
     if current_node is None:
       return
-    previous_node.next = current_node.next
+    privious_node.next = current_node.next
     current_node = None
 
 
