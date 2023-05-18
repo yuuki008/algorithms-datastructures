@@ -1,60 +1,57 @@
-n = 9
+n = 4
 A = [
-[0, 1, 4],
-[1, 2, 3],
-[2, -1, -1],
-[3, -1, -1],
-[4, 5, 8],
-[5, 6, 7],
-[6, -1, -1],
-[7, -1, -1],
-[8, -1, -1]
+[1, 0, -1],
+[0, 2, -1],
+[2, 3, -1],
+[3, -1, -1]
 ]
 
-T = [{ 'parent': -1, 'degree': 0, 'type': 'root', 'height': 0, 'sibling': -1 } for _ in range(n)]
+T = [{ 'parent': -1, 'sibling': -1, 'degree': 0, 'depth': 0, 'height': 0 } for _ in range(n)]
 
-for i in range(n):
-  T[A[i][0]]['node'] = A[i][0]
-  T[A[i][0]]['childs'] = A[i][1:]
-  if A[i][1] != -1:
-    T[A[i][1]]['sibling'] = A[i][2]
-  if A[i][2] != -1:
-    T[A[i][2]]['sibling'] = A[i][1]
-  if A[i][1] != -1:
-    T[A[i][1]]['parent'] = A[i][0]
-    T[A[i][0]]['degree'] += 1
-  if A[i][2] != -1:
-    T[A[i][2]]['parent'] = A[i][0]
-    T[A[i][0]]['degree'] += 1
-  if A[i][1] != -1 and A[i][2] != -1:
-    T[A[i][0]]['type'] = 'leaf'
+for a in A:
+  # ノードにid・left・rightを登録
+  T[a[0]]['node'] = a[0]
+  T[a[0]]['left'] = a[1]
+  T[a[0]]['right'] = a[2]
 
-def find_depth(t, depth):
-  if t['parent'] == -1:
+  # ノードに子ノードの数
+  # 子ノードにparent
+  # 子ノードにsibling
+  if a[1] != -1:
+    T[a[0]]['degree'] += 1
+    T[a[1]]['parent'] = a[0]
+    T[a[1]]['sibling'] = a[2]
+  if a[2] != -1:
+    T[a[0]]['degree'] += 1
+    T[a[2]]['parent'] = a[0]
+    T[a[2]]['sibling'] = a[1]
+
+def set_height(node_id, height):
+  h1 = h2 = height
+  if T[node_id]['right'] != -1:
+    h1 = set_height(T[node_id]['right'], height + 1)
+  if T[node_id]['left'] != -1:
+    h2 = set_height(T[node_id]['left'], height + 1)
+
+  return max(h1, h2)
+
+
+def set_depth(node_id, depth):
+  if T[node_id]['parent'] == -1:
     return depth
 
-  return find_depth(T[t['parent']], depth + 1)
-
-def find_height(node, height):
-  if T[node]['degree'] == 0:
-    return height
-
-  max_height = height
-  for child in T[node]['childs']:
-    max_height = max(find_height(child, height + 1), max_height)
-  return max_height
+  return set_depth(T[node_id]['parent'], depth + 1)
 
 for t in T:
-  depth = find_depth(t, 0)
-  height = find_height(t['node'], 0)
-  t['depth'] = depth
-  t['height'] = height
-  if depth == 0:
-    t['type'] = 'root'
-  elif t['degree'] == 0:
-    t['type'] = 'leaf'
+  t['depth'] = set_depth(t['node'], 0)
+  t['height'] = set_height(t['node'], 0)
+
+  # nodeの種類を登録(root | internal node | leaf)
+  if t["depth"] == 0:
+    t["type"] = "root"
+  elif t["degree"] == 0:
+    t["type"] = "leaf"
   else:
-    t['type'] = 'internal node'
+    t["type"] = "internal node"
 
-for t in T:
   print(f'node {t["node"]}: parent = {t["parent"]}, sibling = {t["sibling"]}, degree = {t["degree"]}, depth = {t["depth"]}, height = {t["height"]}, {t["type"]}')
