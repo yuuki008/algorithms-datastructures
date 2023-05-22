@@ -14,6 +14,6 @@ def max_heapify(A, i):
         A[i], A[largest] = A[largest], A[i]
         max_heapify(A, largest)
 
-for i in range(n, 0, -1):
+for i in range(n//2, 0, -1):
     max_heapify(A, i)
 print("", *A[1:])
