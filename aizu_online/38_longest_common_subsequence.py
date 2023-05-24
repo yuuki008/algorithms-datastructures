@@ -2,7 +2,7 @@ subsequence_1 = 'abcdab'
 subsequence_2 = 'bdcaba'
 
 
-
+# 制限時間を超えて解くことできず
 def longest_common_subsequence(s_1, s_2):
   c = [[0 for _ in range(len(s_2) + 1)] for _ in range(len(s_1) + 1)]
 
