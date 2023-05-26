@@ -8,9 +8,9 @@ G = [
 [6, 1, 6],
 ]
 
-D = [0, 0] + [-1 for _ in range(n-1)]
+D = [-1 for _ in range(n+1)]
 Q = [G[0][0]]
-
+D[1] = 0
 while len(Q):
   u = Q.pop(0)
   for v in sorted(G[u-1][2:]):
