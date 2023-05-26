@@ -1,30 +1,34 @@
-n = 3
-adj = [
-[1, 1, 2],
-[2, 1, 3],
-[3, 1, 1]
+n = 6
+G = [
+[1, 2, 2, 3],
+[2, 2, 3, 4],
+[3, 1, 5],
+[4, 1, 6],
+[5, 1, 6],
+[6, 0],
 ]
+
 A = [[] for _ in range(n+1)]
 def depth_first_search(v, time):
   if len(A[v]) > 0:
     return time
 
-  time += 1
+  # 初回訪問時刻
+  time +=1
   A[v].append(v)
   A[v].append(time)
-  V = sorted(adj[v-1][2:])
-  for num in V:
-    if num == v:
-      continue
+
+  for num in sorted(G[v-1][2:]):
     time = depth_first_search(num, time)
+
+  # 隣接リスト探索完了時刻
   time += 1
   A[v].append(time)
   return time
 
-
 time = 0
-for i in range(n):
-  time = depth_first_search(adj[i][0], time)
+for g in G:
+  time = depth_first_search(g[0], time)
 
-for a in A[1:]:
-  print(*a)
+for a in A:
+  print(a)
